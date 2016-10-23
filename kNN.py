@@ -109,6 +109,7 @@ if __name__ == "__main__":
 
 
 	print final_decision
+	print len(final_decision)
 
 		
 
