@@ -6,9 +6,17 @@ import scipy.io.arff as arff
 import pandas as pd
 from math import sqrt
 
+# reading training data
+training_arff = arff.loadarff(open(str(sys.argv[1]), 'rb'))
+(data, metadata) = training_arff
+df =  pd.DataFrame(data)
 
+# for test data set 
+test_arff = arff.loadarff(open(str(sys.argv[2]), 'rb'))
+(testData, testMetadata) = test_arff
+testDf = pd.DataFrame(testData)
 
-def knn(k, problemType, final_decision, df, testDf, metadata):
+def knn(k, problemType, final_decision):
 	# go throuogh testing data to find out class of each instance
 	for test_data in testDf.values:
 		# test_data is a row in test data
@@ -24,11 +32,19 @@ def knn(k, problemType, final_decision, df, testDf, metadata):
 			for i, j in zip(train_data[: -1], test_data[: -1]):
 				square_dist = square_dist + (i - j)**2
 				# print square_dist
+			print sqrt(square_dist)
 			eucl_dist[counter] = sqrt(square_dist)
 
 		# finding top k neighbours
 		sorted_dist_index = sorted(eucl_dist, key = eucl_dist.get)
+		# for s in sorted_dist_index:
+		# 	print "%d %.12f" %(s, eucl_dist[s]),
+		#print sorted_dist_index
 		k_list = sorted_dist_index[:k]
+		#print "k list ---------------"
+		#print k_list;
+		# tempList = [eucl_dist[k_list[0]], eucl_dist[k_list[1]], eucl_dist[k_list[2]]]
+		# print tempList
 
 		# assigning class/response to the current instance of test data
 		k_decisions = []
@@ -43,8 +59,12 @@ def knn(k, problemType, final_decision, df, testDf, metadata):
 			maximum = ('', 0)
 			for c in metadata['class'][1]:
 				decision_map[c] = 0
+			print "decision map"
+			print decision_map
 			for dec in k_decisions:
 				decision_map[dec] += 1
+				#if decision_map[dec] > maximum[1] : maximum = (dec, )
+			print decision_map
 			for dec in metadata['class'][1]:
 				if decision_map[dec] > maximum[1] : maximum = (dec, decision_map[dec])
 			# append to final decision list	
@@ -59,7 +79,7 @@ def knn(k, problemType, final_decision, df, testDf, metadata):
 			final_decision.append(maximum)
 
 
-def print_op(k, problemType, final_decision, df, testDf):
+def print_op(k, problemType, final_decision):
 	correctly_classified = 0
 	mean_error = 0.0
 	print "k value : %d" %(k)
@@ -67,13 +87,15 @@ def print_op(k, problemType, final_decision, df, testDf):
 	if problemType == "classification":
 		
 		for i in range(len(final_decision)) :
+			print "test values"
+			print testDf.values[i]
 			print "Predicted class : %s\tActual class : %s" %(final_decision[i], testDf.values[i][-1])
 			if testDf.values[i][-1] == final_decision[i]:
 				correctly_classified += 1
 
 		print "Number of correctly classified instances : %d" %(correctly_classified)
 		print "Total number of instances : %d" %(len(final_decision))
-		print "Accuracy : %.16f" %(correctly_classified / float(len(final_decision)))
+		print "Accuracy : %f" %(correctly_classified / float(len(final_decision)))
 
 	elif problemType == "regression":
 		for i in range(len(final_decision)) :
@@ -88,39 +110,10 @@ def print_op(k, problemType, final_decision, df, testDf):
 		print "Total number of instances : %d" %(len(final_decision))	
 
 
-def return_accuracy(k, problemType, final_decision):
-	correctly_classified = 0
-	accuracy = 0
 
-	if problemType == "classification":
-		for i in range(len(final_decision)) :
-			if testDf.values[i][-1] == final_decision[i]:
-				correctly_classified += 1
-		accuracy = correctly_classified / float(len(final_decision))
-
-	elif problemType == "regression":
-		for i in range(len(final_decision)) :
-			if testDf.values[i][-1] == final_decision[i]:
-				correctly_classified += 1
-			mean_error += float(abs(testDf.values[i][-1] - final_decision[i]))
-		mean_error = mean_error / float(len(final_decision)) 
-		accuracy = mean_error
-
-	return accuracy
-
-	
 # main function
 if __name__ == "__main__":
 
-	# reading training data
-	training_arff = arff.loadarff(open(str(sys.argv[1]), 'rb'))
-	(data, metadata) = training_arff
-	df =  pd.DataFrame(data)
-
-	# for test data set 
-	test_arff = arff.loadarff(open(str(sys.argv[2]), 'rb'))
-	(testData, testMetadata) = test_arff
-	testDf = pd.DataFrame(testData)
 	# check if it is classification or regression
 	if df.columns[-1] == "class":
 		problemType = "classification"
@@ -129,7 +122,7 @@ if __name__ == "__main__":
 
 	final_decision = []
 	k = int(sys.argv[3])
-	knn(k, problemType, final_decision, df, testDf, metadata)
-	print_op(k, problemType, final_decision, df, testDf)
+	knn(k, problemType, final_decision)
+	print_op(k, problemType, final_decision)
 
 	

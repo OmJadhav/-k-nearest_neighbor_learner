@@ -211,6 +211,10 @@ def return_accuracy1(k, problemType, final_decision, testDf):
 		mean_error = mean_error / float(len(final_decision)) 
 		accuracy = mean_error
 
+	print "accuracy _____________"
+	print accuracy
+	return accuracy
+
 def return_accuracy(k, problemType, final_decision, testDf):
 	incorrectly_classified = 0
 	accuracy = 0
@@ -227,6 +231,10 @@ def return_accuracy(k, problemType, final_decision, testDf):
 			mean_error += float(abs(testDf.values[i][-1] - final_decision[i]))
 		mean_error = mean_error / float(len(final_decision)) 
 		accuracy = mean_error
+
+	print "accuracy _____________"
+	print accuracy
+	return accuracy
 
 
 def print_accuracy_for_all_k(problemType, klist, accuracy, best_k):
@@ -293,7 +301,3 @@ if __name__ == "__main__":
 	print_op(best_k, problemType, final_decision_best_k, df, testDf)
 
 	# do knn for first of the 
-
-
-
-	
