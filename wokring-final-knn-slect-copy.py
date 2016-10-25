@@ -211,6 +211,8 @@ def return_accuracy1(k, problemType, final_decision, testDf):
 		mean_error = mean_error / float(len(final_decision)) 
 		accuracy = mean_error
 
+	print "accuracy _____________"
+	print accuracy
 	return accuracy
 
 def return_accuracy(k, problemType, final_decision, testDf):
@@ -230,6 +232,8 @@ def return_accuracy(k, problemType, final_decision, testDf):
 		mean_error = mean_error / float(len(final_decision)) 
 		accuracy = mean_error
 
+	print "accuracy _____________"
+	print accuracy
 	return accuracy
 
 
@@ -274,11 +278,14 @@ if __name__ == "__main__":
 
 	klist = [int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])]
 	for i, k in zip(range(len(klist)), klist):
+		print i
+		print k
 		knn_select(k, problemType, final_decision[i], df, df, metadata)
 		tempList = final_decision[i]
 		accuracy.append(return_accuracy(k, problemType, tempList, df))
 
 	sorted_klist_index = sorted(range(len(accuracy)), key=lambda k: accuracy[k])
+	print sorted_klist_index
 
 	# print the accuracy
 	best_k = klist[sorted_klist_index[0]]
